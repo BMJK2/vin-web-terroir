@@ -2,41 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Wine-themed design system with sophisticated colors and gradients */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 48 20% 96%;
+    --foreground: 0 15% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 48 25% 98%;
+    --card-foreground: 0 15% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 48 25% 98%;
+    --popover-foreground: 0 15% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Wine burgundy primary */
+    --primary: 0 45% 25%;
+    --primary-foreground: 48 20% 96%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Warm gold secondary */
+    --secondary: 45 55% 75%;
+    --secondary-foreground: 0 15% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted wine tones */
+    --muted: 48 15% 90%;
+    --muted-foreground: 0 8% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Gold accent */
+    --accent: 45 85% 60%;
+    --accent-foreground: 0 15% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 48 12% 85%;
+    --input: 48 12% 85%;
+    --ring: 0 45% 25%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Wine-specific colors */
+    --wine-burgundy: 0 45% 25%;
+    --wine-gold: 45 85% 60%;
+    --wine-cream: 48 20% 96%;
+    --wine-dark: 0 15% 15%;
+    
+    /* Gradients */
+    --gradient-wine: linear-gradient(135deg, hsl(var(--wine-burgundy)), hsl(0 35% 35%));
+    --gradient-gold: linear-gradient(135deg, hsl(var(--wine-gold)), hsl(45 75% 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--wine-burgundy)) 0%, hsl(0 35% 35%) 50%, hsl(var(--wine-gold)) 100%);
+    
+    /* Shadows with wine theme */
+    --shadow-wine: 0 10px 30px -10px hsl(var(--wine-burgundy) / 0.3);
+    --shadow-gold: 0 5px 20px -5px hsl(var(--wine-gold) / 0.4);
+    --shadow-elegant: 0 20px 50px -20px hsl(var(--wine-burgundy) / 0.2);
+    
+    /* Typography */
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Inter', sans-serif;
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-wine: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 

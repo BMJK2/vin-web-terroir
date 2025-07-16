@@ -52,6 +52,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				wine: {
+					burgundy: 'hsl(var(--wine-burgundy))',
+					gold: 'hsl(var(--wine-gold))',
+					cream: 'hsl(var(--wine-cream))',
+					dark: 'hsl(var(--wine-dark))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -67,6 +73,24 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			backgroundImage: {
+				'gradient-wine': 'var(--gradient-wine)',
+				'gradient-gold': 'var(--gradient-gold)',
+				'gradient-hero': 'var(--gradient-hero)'
+			},
+			boxShadow: {
+				'wine': 'var(--shadow-wine)',
+				'gold': 'var(--shadow-gold)',
+				'elegant': 'var(--shadow-elegant)'
+			},
+			fontFamily: {
+				serif: 'var(--font-serif)',
+				sans: 'var(--font-sans)'
+			},
+			transitionTimingFunction: {
+				'wine': 'var(--transition-wine)',
+				'smooth': 'var(--transition-smooth)'
 			},
 			keyframes: {
 				'accordion-down': {
