@@ -88,9 +88,13 @@ export default {
 				serif: 'var(--font-serif)',
 				sans: 'var(--font-sans)'
 			},
+			transitionDuration: {
+				'wine': '400ms',
+				'smooth': '300ms'
+			},
 			transitionTimingFunction: {
-				'wine': 'var(--transition-wine)',
-				'smooth': 'var(--transition-smooth)'
+				'wine': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+				'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)'
 			},
 			keyframes: {
 				'accordion-down': {
