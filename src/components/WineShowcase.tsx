@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WineCard from "./WineCard";
 import { ArrowRight, Award, Grape, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 import wineRed1 from "@/assets/wine-red-1.jpg";
 import wineWhite1 from "@/assets/wine-white-1.jpg";
 import wineChampagne1 from "@/assets/wine-champagne-1.jpg";
@@ -146,9 +147,11 @@ const WineShowcase = () => {
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <Button variant="wine" size="xl" className="group">
-            Voir Toute la Collection
-            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+          <Button variant="wine" size="xl" className="group" asChild>
+            <Link to="/collection">
+              Voir Toute la Collection
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </Button>
         </div>
 
