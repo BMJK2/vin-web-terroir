@@ -1,4 +1,5 @@
 import { Wine, Mail, Phone, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -29,24 +30,24 @@ const Footer = () => {
             <h3 className="font-serif font-semibold text-wine-gold">Navigation</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#accueil" className="hover:text-wine-gold transition-wine">
+                <Link to="/" className="hover:text-wine-gold transition-wine">
                   Accueil
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#vins" className="hover:text-wine-gold transition-wine">
+                <Link to="/vins" className="hover:text-wine-gold transition-wine">
                   Nos Vins
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#cave" className="hover:text-wine-gold transition-wine">
-                  Notre Cave
-                </a>
+                <Link to="/collection" className="hover:text-wine-gold transition-wine">
+                  Notre Collection
+                </Link>
               </li>
               <li>
-                <a href="#contact" className="hover:text-wine-gold transition-wine">
-                  Contact
-                </a>
+                <Link to="/histoire" className="hover:text-wine-gold transition-wine">
+                  Notre Histoire
+                </Link>
               </li>
             </ul>
           </div>
