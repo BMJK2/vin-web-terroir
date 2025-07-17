@@ -11,7 +11,7 @@ const Footer = () => {
               <Wine className="h-8 w-8 text-wine-gold" />
               <div className="flex flex-col">
                 <span className="font-serif font-bold text-xl">
-                  Eden'Wine
+                  Eden's Wine
                 </span>
                 <span className="text-sm text-wine-cream/70">
                   Vins d'Excellence
@@ -90,7 +90,7 @@ const Footer = () => {
         {/* Bottom */}
         <div className="border-t border-wine-cream/20 mt-12 pt-8 text-center text-sm text-wine-cream/70">
           <p>
-            © 2024 Eden'Wine. Tous droits réservés. 
+            © 2024 Eden's Wine. Tous droits réservés. 
             <span className="mx-2">•</span>
             L'abus d'alcool est dangereux pour la santé.
           </p>
