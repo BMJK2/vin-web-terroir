@@ -44,7 +44,7 @@ const History = () => {
                   Les Débuts d'une Passion
                 </h2>
                 <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                  Fondé en 1999 par Jean-Pierre Château, Eden's Wine est né d'une passion 
+                  Fondé en 1999 par Jean-Pierre Château, Vignoble Malagasy est né d'une passion 
                   inconditionnelle pour les grands vins français. Tout a commencé par un rêve simple : 
                   partager les trésors cachés de nos terroirs avec les amateurs de bons vins.
                 </p>
