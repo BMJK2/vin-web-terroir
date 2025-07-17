@@ -14,7 +14,7 @@ const Header = () => {
             <Wine className="h-8 w-8 text-wine-gold" />
             <div className="flex flex-col">
               <span className="font-serif font-bold text-xl text-wine-cream">
-                Château des Vignes
+                Eden'Wine
               </span>
               <span className="text-sm text-wine-cream/70">
                 Vins d'Excellence
@@ -80,7 +80,7 @@ const Header = () => {
                 <div className="flex items-center space-x-2 mb-8">
                   <Wine className="h-6 w-6 text-wine-gold" />
                   <span className="font-serif font-bold text-lg text-wine-burgundy">
-                    Château des Vignes
+                    Eden'Wine
                   </span>
                 </div>
                 
