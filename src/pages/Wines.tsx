@@ -29,7 +29,7 @@ const Wines = () => {
             </h1>
             
             <p className="text-xl leading-relaxed text-wine-cream/90 max-w-2xl mx-auto">
-              Explorez notre sélection exceptionnelle de vins français, 
+              Explorez notre sélection exceptionnelle de vins Malagasy, 
               soigneusement choisis pour leur qualité et leur caractère unique.
             </p>
           </div>
