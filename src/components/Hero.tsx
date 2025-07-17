@@ -28,7 +28,7 @@ const Hero = () => {
           {/* Title */}
           <h1 className="font-serif text-5xl md:text-7xl font-bold text-wine-cream mb-6 leading-tight">
             L'Excellence du
-            <span className="text-wine-gold block">Vignoble Français</span>
+            <span className="text-wine-gold block">Vignoble Malagasy</span>
           </h1>
 
           {/* Subtitle */}
