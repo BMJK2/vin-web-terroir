@@ -20,7 +20,7 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-wine-cream/80 text-sm leading-relaxed">
-              Découvrez l'excellence du vignoble français à travers notre 
+              Découvrez l'excellence du vignoble Malagasy à travers notre 
               sélection passionnée de vins d'exception.
             </p>
           </div>

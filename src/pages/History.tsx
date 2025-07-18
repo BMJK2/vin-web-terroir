@@ -45,13 +45,13 @@ const History = () => {
                 </h2>
                 <p className="text-muted-foreground text-lg leading-relaxed mb-6">
                   Fondé en 1999 par Jean-Pierre Château, Eden's Wine est né d'une passion 
-                  inconditionnelle pour les grands vins français. Tout a commencé par un rêve simple : 
+                  inconditionnelle pour les grands vins Malagasy. Tout a commencé par un rêve simple : 
                   partager les trésors cachés de nos terroirs avec les amateurs de bons vins.
                 </p>
                 <p className="text-muted-foreground text-lg leading-relaxed">
                   Diplômé de l'École du Vin de Bordeaux et fort de plus de 30 ans d'expérience dans 
                   le secteur viticole, Jean-Pierre a su créer un réseau de relations privilégiées 
-                  avec les plus grands domaines de France.
+                  avec les plus grands domaines de Madagascar.
                 </p>
               </div>
               <div className="bg-wine-cream/30 rounded-2xl p-8">
@@ -112,7 +112,7 @@ const History = () => {
                       2005 - Reconnaissance Nationale
                     </h3>
                     <p className="text-muted-foreground">
-                      Premier prix de la "Meilleure Cave de France" décerné par le Guide Hachette des Vins. 
+                      Premier prix de la "Meilleure Cave de Madagascar" décerné par le Guide Hachette des Vins. 
                       Extension de notre sélection aux vins de Loire et du Rhône.
                     </p>
                   </div>
@@ -143,7 +143,7 @@ const History = () => {
                     </h3>
                     <p className="text-muted-foreground">
                       Avec plus de 500 références et des partenariats exclusifs avec les plus grands 
-                      domaines, nous continuons à partager notre passion pour l'excellence vinicole française.
+                      domaines, nous continuons à partager notre passion pour l'excellence vinicole Malagasy.
                     </p>
                   </div>
                 </div>

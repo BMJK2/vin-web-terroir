@@ -51,7 +51,7 @@ const Wines = () => {
                 Appellations Contrôlées
               </h3>
               <p className="text-muted-foreground">
-                Tous nos vins respectent les standards d'appellation et de qualité française.
+                Tous nos vins respectent les standards d'appellation et de qualité Malagasy.
               </p>
             </div>
             
@@ -75,7 +75,7 @@ const Wines = () => {
                 Terroirs Authentiques
               </h3>
               <p className="text-muted-foreground">
-                Découvrez la richesse des terroirs français à travers chaque bouteille.
+                Découvrez la richesse des terroirs Malagasy à travers chaque bouteille.
               </p>
             </div>
           </div>

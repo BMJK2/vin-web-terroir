@@ -165,7 +165,7 @@ const WineShowcase = () => {
               Terroirs d'Exception
             </h3>
             <p className="text-muted-foreground">
-              Vins issus des plus beaux terroirs français, travaillés avec passion et respect.
+              Vins issus des plus beaux terroirs Malagasy, travaillés avec passion et respect.
             </p>
           </div>
           
@@ -189,7 +189,7 @@ const WineShowcase = () => {
               Livraison Soignée
             </h3>
             <p className="text-muted-foreground">
-              Expédition sécurisée dans toute la France avec un emballage adapté.
+              Expédition sécurisée dans tout Madagascar avec un emballage adapté.
             </p>
           </div>
         </div>
