@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Wine, Plus } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
 
 interface WineCardProps {
   name: string;
@@ -15,6 +16,19 @@ interface WineCardProps {
 }
 
 const WineCard = ({ name, region, year, price, rating, image, type, description }: WineCardProps) => {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart({
+      name,
+      region,
+      year,
+      price: parseFloat(price),
+      image,
+      type
+    });
+  };
+
   return (
     <Card className="group overflow-hidden border-0 shadow-elegant hover:shadow-wine transition-wine bg-card">
       <div className="relative overflow-hidden">
@@ -38,6 +52,7 @@ const WineCard = ({ name, region, year, price, rating, image, type, description 
           variant="wine"
           size="icon"
           className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-wine"
+          onClick={handleAddToCart}
         >
           <Plus className="h-4 w-4" />
         </Button>
@@ -81,7 +96,7 @@ const WineCard = ({ name, region, year, price, rating, image, type, description 
               Prix TTC
             </div>
           </div>
-          <Button variant="elegant" size="sm">
+          <Button variant="elegant" size="sm" onClick={handleAddToCart}>
             Ajouter au Panier
           </Button>
         </div>

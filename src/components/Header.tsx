@@ -1,10 +1,16 @@
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Wine, Menu, ShoppingCart, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useCart } from "@/contexts/CartContext";
+import CartModal from "./CartModal";
+import { useState } from "react";
 
 const Header = () => {
   const location = useLocation();
+  const { totalItems } = useCart();
+  const [cartOpen, setCartOpen] = useState(false);
   return (
     <header className="w-full bg-wine-burgundy backdrop-blur-md sticky top-0 z-50 shadow-elegant">
       <div className="container mx-auto px-4">
@@ -60,8 +66,21 @@ const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="text-wine-cream hover:text-wine-gold">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-wine-cream hover:text-wine-gold relative"
+              onClick={() => setCartOpen(true)}
+            >
               <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-wine-gold text-wine-dark"
+                >
+                  {totalItems}
+                </Badge>
+              )}
             </Button>
             <Button variant="gold" size="sm" className="hidden md:inline-flex" asChild>
               <Link to="/collection">
@@ -123,6 +142,8 @@ const Header = () => {
           </div>
         </div>
       </div>
+      
+      <CartModal open={cartOpen} onOpenChange={setCartOpen} />
     </header>
   );
 };
