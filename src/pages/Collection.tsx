@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WineCard from "@/components/WineCard";
@@ -6,106 +7,93 @@ import { ArrowLeft, Filter, Search, SlidersHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import wineRed1 from "@/assets/wine-red-1.jpg";
-import wineWhite1 from "@/assets/wine-white-1.jpg";
-import wineChampagne1 from "@/assets/wine-champagne-1.jpg";
-import wineRed2 from "@/assets/wine-red-2.jpg";
-import wineWhite2 from "@/assets/wine-white-2.jpg";
-import wineRose1 from "@/assets/wine-rose-1.jpg";
+import { wines } from "@/data/wines";
 
 const Collection = () => {
-  const allWines = [
-    {
-      name: "Château Margaux",
-      region: "Bordeaux",
-      year: "2018",
-      price: "299",
-      rating: 5,
-      image: wineRed1,
-      type: "Rouge",
-      description: "Un grand cru exceptionnel aux arômes complexes de fruits noirs et d'épices."
-    },
-    {
-      name: "Sancerre Blanc",
-      region: "Loire",
-      year: "2021",
-      price: "45",
-      rating: 4,
-      image: wineWhite1,
-      type: "Blanc",
-      description: "Vin blanc sec et minéral, parfait pour accompagner fruits de mer et poissons."
-    },
-    {
-      name: "Champagne Bollinger",
-      region: "Champagne",
-      year: "2019",
-      price: "85",
-      rating: 5,
-      image: wineChampagne1,
-      type: "Effervescent",
-      description: "Champagne prestigieux aux bulles fines et aux arômes de brioche et d'agrumes."
-    },
-    {
-      name: "Côte-Rôtie",
-      region: "Rhône",
-      year: "2020",
-      price: "125",
-      rating: 4,
-      image: wineRed2,
-      type: "Rouge",
-      description: "Vin rouge puissant et élégant, expression parfaite du terroir rhodanien."
-    },
-    {
-      name: "Chassagne-Montrachet",
-      region: "Bourgogne",
-      year: "2021",
-      price: "180",
-      rating: 5,
-      image: wineWhite2,
-      type: "Blanc",
-      description: "Chardonnay d'exception aux notes beurrées et minérales incomparables."
-    },
-    {
-      name: "Bandol Rosé",
-      region: "Provence",
-      year: "2022",
-      price: "35",
-      rating: 4,
-      image: wineRose1,
-      type: "Rosé",
-      description: "Rosé de caractère aux arômes de fruits rouges et d'herbes de Provence."
-    },
-    {
-      name: "Pommard Premier Cru",
-      region: "Bourgogne",
-      year: "2019",
-      price: "220",
-      rating: 5,
-      image: wineRed1,
-      type: "Rouge",
-      description: "Grand Bourgogne aux tanins soyeux et aux arômes de cerise et de sous-bois."
-    },
-    {
-      name: "Pouilly-Fumé",
-      region: "Loire",
-      year: "2022",
-      price: "38",
-      rating: 4,
-      image: wineWhite1,
-      type: "Blanc",
-      description: "Sauvignon blanc expressif aux notes de pierre à fusil et d'agrumes."
-    },
-    {
-      name: "Châteauneuf-du-Pape",
-      region: "Rhône",
-      year: "2018",
-      price: "95",
-      rating: 5,
-      image: wineRed2,
-      type: "Rouge",
-      description: "Assemblage noble aux arômes de garrigue, d'épices et de fruits mûrs."
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
+  const [selectedRegion, setSelectedRegion] = useState("all");
+  const [selectedPriceRange, setSelectedPriceRange] = useState("all");
+  const [sortBy, setSortBy] = useState("popularity");
+  const [displayedCount, setDisplayedCount] = useState(9);
+
+  // Get unique regions from wines data
+  const regions = useMemo(() => {
+    const uniqueRegions = [...new Set(wines.map(wine => wine.region))];
+    return uniqueRegions.sort();
+  }, []);
+
+  // Filter and sort wines
+  const filteredAndSortedWines = useMemo(() => {
+    let filtered = wines.filter(wine => {
+      // Search filter
+      if (searchQuery && !wine.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !wine.region.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          !wine.description.toLowerCase().includes(searchQuery.toLowerCase())) {
+        return false;
+      }
+
+      // Type filter
+      if (selectedType !== "all" && wine.type !== selectedType) {
+        return false;
+      }
+
+      // Region filter
+      if (selectedRegion !== "all" && wine.region.toLowerCase() !== selectedRegion.toLowerCase()) {
+        return false;
+      }
+
+      // Price range filter
+      if (selectedPriceRange !== "all") {
+        const price = wine.price;
+        switch (selectedPriceRange) {
+          case "0-50":
+            return price <= 50;
+          case "50-100":
+            return price > 50 && price <= 100;
+          case "100-200":
+            return price > 100 && price <= 200;
+          case "200+":
+            return price > 200;
+          default:
+            return true;
+        }
+      }
+
+      return true;
+    });
+
+    // Sort wines
+    switch (sortBy) {
+      case "price-asc":
+        return filtered.sort((a, b) => a.price - b.price);
+      case "price-desc":
+        return filtered.sort((a, b) => b.price - a.price);
+      case "rating":
+        return filtered.sort((a, b) => b.rating - a.rating);
+      case "year":
+        return filtered.sort((a, b) => b.year - a.year);
+      case "popularity":
+      default:
+        return filtered.sort((a, b) => b.rating - a.rating);
     }
-  ];
+  }, [searchQuery, selectedType, selectedRegion, selectedPriceRange, sortBy]);
+
+  const displayedWines = filteredAndSortedWines.slice(0, displayedCount);
+  const hasMoreWines = displayedCount < filteredAndSortedWines.length;
+
+  const handleLoadMore = () => {
+    setDisplayedCount(prev => prev + 6);
+  };
+
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedType("all");
+    setSelectedRegion("all");
+    setSelectedPriceRange("all");
+    setSortBy("popularity");
+    setDisplayedCount(9);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -143,12 +131,14 @@ const Collection = () => {
                   <Input 
                     placeholder="Rechercher un vin..." 
                     className="pl-10"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </div>
               
               <div className="flex items-center space-x-4">
-                <Select>
+                <Select value={selectedType} onValueChange={setSelectedType}>
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
@@ -156,27 +146,24 @@ const Collection = () => {
                     <SelectItem value="all">Tous les types</SelectItem>
                     <SelectItem value="rouge">Rouge</SelectItem>
                     <SelectItem value="blanc">Blanc</SelectItem>
-                    <SelectItem value="rose">Rosé</SelectItem>
-                    <SelectItem value="effervescent">Effervescent</SelectItem>
+                    <SelectItem value="rosé">Rosé</SelectItem>
+                    <SelectItem value="champagne">Champagne</SelectItem>
                   </SelectContent>
                 </Select>
                 
-                <Select>
+                <Select value={selectedRegion} onValueChange={setSelectedRegion}>
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Région" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Toutes régions</SelectItem>
-                    <SelectItem value="bordeaux">Bordeaux</SelectItem>
-                    <SelectItem value="bourgogne">Bourgogne</SelectItem>
-                    <SelectItem value="loire">Loire</SelectItem>
-                    <SelectItem value="rhone">Rhône</SelectItem>
-                    <SelectItem value="champagne">Champagne</SelectItem>
-                    <SelectItem value="provence">Provence</SelectItem>
+                    {regions.map(region => (
+                      <SelectItem key={region} value={region}>{region}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 
-                <Select>
+                <Select value={selectedPriceRange} onValueChange={setSelectedPriceRange}>
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Prix" />
                   </SelectTrigger>
@@ -189,7 +176,7 @@ const Collection = () => {
                   </SelectContent>
                 </Select>
                 
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" onClick={resetFilters} title="Réinitialiser les filtres">
                   <SlidersHorizontal className="h-4 w-4" />
                 </Button>
               </div>
@@ -205,14 +192,18 @@ const Collection = () => {
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="font-serif text-2xl font-bold text-wine-burgundy">
-                  {allWines.length} vins disponibles
+                  {filteredAndSortedWines.length} vins disponibles
                 </h2>
                 <p className="text-muted-foreground">
-                  Triés par popularité
+                  {sortBy === "popularity" ? "Triés par popularité" : 
+                   sortBy === "price-asc" ? "Prix croissant" :
+                   sortBy === "price-desc" ? "Prix décroissant" :
+                   sortBy === "rating" ? "Triés par note" :
+                   "Triés par millésime"}
                 </p>
               </div>
               
-              <Select>
+              <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder="Trier par..." />
                 </SelectTrigger>
@@ -226,18 +217,43 @@ const Collection = () => {
               </Select>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {allWines.map((wine, index) => (
-                <WineCard key={index} {...wine} />
-              ))}
-            </div>
-            
-            {/* Load More */}
-            <div className="text-center mt-12">
-              <Button variant="outline" size="lg">
-                Charger plus de vins...
-              </Button>
-            </div>
+            {displayedWines.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {displayedWines.map((wine) => (
+                    <WineCard 
+                      key={wine.id} 
+                      name={wine.name}
+                      region={wine.region}
+                      year={wine.year.toString()}
+                      price={wine.price.toString()}
+                      rating={wine.rating}
+                      image={wine.image}
+                      type={wine.type}
+                      description={wine.description}
+                    />
+                  ))}
+                </div>
+                
+                {/* Load More */}
+                {hasMoreWines && (
+                  <div className="text-center mt-12">
+                    <Button variant="outline" size="lg" onClick={handleLoadMore}>
+                      Charger plus de vins... ({filteredAndSortedWines.length - displayedCount} restants)
+                    </Button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground text-lg mb-4">
+                  Aucun vin ne correspond à vos critères de recherche.
+                </p>
+                <Button onClick={resetFilters} variant="outline">
+                  Réinitialiser les filtres
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </section>
