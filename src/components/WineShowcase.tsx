@@ -3,76 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WineCard from "./WineCard";
 import { ArrowRight, Award, Grape, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import wineRed1 from "@/assets/wine-red-1.jpg";
-import wineWhite1 from "@/assets/wine-white-1.jpg";
-import wineChampagne1 from "@/assets/wine-champagne-1.jpg";
-import wineRed2 from "@/assets/wine-red-2.jpg";
-import wineWhite2 from "@/assets/wine-white-2.jpg";
-import wineRose1 from "@/assets/wine-rose-1.jpg";
+import { getFeaturedWines } from "@/data/wines";
 
 const WineShowcase = () => {
-  const wines = [
-    {
-      name: "Château Margaux",
-      region: "Bordeaux",
-      year: "2018",
-      price: "299",
-      rating: 5,
-      image: wineRed1,
-      type: "Rouge",
-      description: "Un grand cru exceptionnel aux arômes complexes de fruits noirs et d'épices."
-    },
-    {
-      name: "Sancerre Blanc",
-      region: "Loire",
-      year: "2021",
-      price: "45",
-      rating: 4,
-      image: wineWhite1,
-      type: "Blanc",
-      description: "Vin blanc sec et minéral, parfait pour accompagner fruits de mer et poissons."
-    },
-    {
-      name: "Champagne Bollinger",
-      region: "Champagne",
-      year: "2019",
-      price: "85",
-      rating: 5,
-      image: wineChampagne1,
-      type: "Effervescent",
-      description: "Champagne prestigieux aux bulles fines et aux arômes de brioche et d'agrumes."
-    },
-    {
-      name: "Côte-Rôtie",
-      region: "Rhône",
-      year: "2020",
-      price: "125",
-      rating: 4,
-      image: wineRed2,
-      type: "Rouge",
-      description: "Vin rouge puissant et élégant, expression parfaite du terroir rhodanien."
-    },
-    {
-      name: "Chassagne-Montrachet",
-      region: "Bourgogne",
-      year: "2021",
-      price: "180",
-      rating: 5,
-      image: wineWhite2,
-      type: "Blanc",
-      description: "Chardonnay d'exception aux notes beurrées et minérales incomparables."
-    },
-    {
-      name: "Bandol Rosé",
-      region: "Provence",
-      year: "2022",
-      price: "35",
-      rating: 4,
-      image: wineRose1,
-      type: "Rosé",
-      description: "Rosé de caractère aux arômes de fruits rouges et d'herbes de Provence."
-    }
-  ];
+  const wines = getFeaturedWines();
 
   return (
     <section className="py-24 bg-background">
@@ -106,40 +40,90 @@ const WineShowcase = () => {
 
           <TabsContent value="all" className="space-y-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {wines.map((wine, index) => (
-                <WineCard key={index} {...wine} />
+              {wines.map((wine) => (
+                <WineCard 
+                  key={wine.id} 
+                  name={wine.name}
+                  region={wine.region}
+                  year={wine.year.toString()}
+                  price={wine.price.toString()}
+                  rating={wine.rating}
+                  image={wine.image}
+                  type={wine.type}
+                  description={wine.description}
+                />
               ))}
             </div>
           </TabsContent>
 
           <TabsContent value="rouge" className="space-y-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {wines.filter(wine => wine.type === "Rouge").map((wine, index) => (
-                <WineCard key={index} {...wine} />
+              {wines.filter(wine => wine.type === "rouge").map((wine) => (
+                <WineCard 
+                  key={wine.id} 
+                  name={wine.name}
+                  region={wine.region}
+                  year={wine.year.toString()}
+                  price={wine.price.toString()}
+                  rating={wine.rating}
+                  image={wine.image}
+                  type={wine.type}
+                  description={wine.description}
+                />
               ))}
             </div>
           </TabsContent>
 
           <TabsContent value="blanc" className="space-y-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {wines.filter(wine => wine.type === "Blanc").map((wine, index) => (
-                <WineCard key={index} {...wine} />
+              {wines.filter(wine => wine.type === "blanc").map((wine) => (
+                <WineCard 
+                  key={wine.id} 
+                  name={wine.name}
+                  region={wine.region}
+                  year={wine.year.toString()}
+                  price={wine.price.toString()}
+                  rating={wine.rating}
+                  image={wine.image}
+                  type={wine.type}
+                  description={wine.description}
+                />
               ))}
             </div>
           </TabsContent>
 
           <TabsContent value="rose" className="space-y-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {wines.filter(wine => wine.type === "Rosé").map((wine, index) => (
-                <WineCard key={index} {...wine} />
+              {wines.filter(wine => wine.type === "rosé").map((wine) => (
+                <WineCard 
+                  key={wine.id} 
+                  name={wine.name}
+                  region={wine.region}
+                  year={wine.year.toString()}
+                  price={wine.price.toString()}
+                  rating={wine.rating}
+                  image={wine.image}
+                  type={wine.type}
+                  description={wine.description}
+                />
               ))}
             </div>
           </TabsContent>
 
           <TabsContent value="effervescent" className="space-y-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {wines.filter(wine => wine.type === "Effervescent").map((wine, index) => (
-                <WineCard key={index} {...wine} />
+              {wines.filter(wine => wine.type === "champagne").map((wine) => (
+                <WineCard 
+                  key={wine.id} 
+                  name={wine.name}
+                  region={wine.region}
+                  year={wine.year.toString()}
+                  price={wine.price.toString()}
+                  rating={wine.rating}
+                  image={wine.image}
+                  type={wine.type}
+                  description={wine.description}
+                />
               ))}
             </div>
           </TabsContent>
