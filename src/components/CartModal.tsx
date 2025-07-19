@@ -2,8 +2,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Trash2, Minus, Plus, ShoppingBag } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingBag, User } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface CartModalProps {
   open: boolean;
@@ -12,6 +15,27 @@ interface CartModalProps {
 
 const CartModal = ({ open, onOpenChange }: CartModalProps) => {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice, totalItems } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      onOpenChange(false);
+      navigate('/login', { state: { from: { pathname: '/checkout' } } });
+      toast({
+        title: "Connexion requise",
+        description: "Veuillez vous connecter pour finaliser votre commande",
+      });
+    } else {
+      // TODO: Implement actual checkout flow
+      toast({
+        title: "Commande en cours",
+        description: "Fonctionnalité de commande à implémenter",
+      });
+      onOpenChange(false);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -146,12 +170,16 @@ const CartModal = ({ open, onOpenChange }: CartModalProps) => {
             <Button 
               variant="wine" 
               className="flex-1"
-              onClick={() => {
-                // TODO: Implement checkout
-                onOpenChange(false);
-              }}
+              onClick={handleCheckout}
             >
-              Valider la commande
+              {isAuthenticated ? (
+                "Valider la commande"
+              ) : (
+                <>
+                  <User className="mr-2 h-4 w-4" />
+                  Se connecter pour commander
+                </>
+              )}
             </Button>
           </div>
         </div>
