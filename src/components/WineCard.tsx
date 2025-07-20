@@ -13,13 +13,15 @@ interface WineCardProps {
   image: string;
   type: string;
   description: string;
+  id?: string;
 }
 
-const WineCard = ({ name, region, year, price, rating, image, type, description }: WineCardProps) => {
+const WineCard = ({ name, region, year, price, rating, image, type, description, id }: WineCardProps) => {
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
     addToCart({
+      id: id || `${name}-${region}-${year}`,
       name,
       region,
       year,

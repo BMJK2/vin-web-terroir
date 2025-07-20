@@ -7,9 +7,10 @@ import { ArrowLeft, Filter, Search, SlidersHorizontal } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { wines } from "@/data/wines";
+import { useWines } from "@/hooks/useWines";
 
 const Collection = () => {
+  const { wines } = useWines();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("all");
   const [selectedRegion, setSelectedRegion] = useState("all");
@@ -223,6 +224,7 @@ const Collection = () => {
                   {displayedWines.map((wine) => (
                     <WineCard 
                       key={wine.id} 
+                      id={wine.id}
                       name={wine.name}
                       region={wine.region}
                       year={wine.year.toString()}

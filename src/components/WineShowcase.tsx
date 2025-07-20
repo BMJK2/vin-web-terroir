@@ -3,9 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WineCard from "./WineCard";
 import { ArrowRight, Award, Grape, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getFeaturedWines } from "@/data/wines";
+import { useWines } from "@/hooks/useWines";
 
 const WineShowcase = () => {
+  const { getFeaturedWines } = useWines();
   const wines = getFeaturedWines();
 
   return (
@@ -43,6 +44,7 @@ const WineShowcase = () => {
               {wines.map((wine) => (
                 <WineCard 
                   key={wine.id} 
+                  id={wine.id}
                   name={wine.name}
                   region={wine.region}
                   year={wine.year.toString()}
@@ -61,6 +63,7 @@ const WineShowcase = () => {
               {wines.filter(wine => wine.type === "rouge").map((wine) => (
                 <WineCard 
                   key={wine.id} 
+                  id={wine.id}
                   name={wine.name}
                   region={wine.region}
                   year={wine.year.toString()}
@@ -79,6 +82,7 @@ const WineShowcase = () => {
               {wines.filter(wine => wine.type === "blanc").map((wine) => (
                 <WineCard 
                   key={wine.id} 
+                  id={wine.id}
                   name={wine.name}
                   region={wine.region}
                   year={wine.year.toString()}
@@ -97,6 +101,7 @@ const WineShowcase = () => {
               {wines.filter(wine => wine.type === "rosé").map((wine) => (
                 <WineCard 
                   key={wine.id} 
+                  id={wine.id}
                   name={wine.name}
                   region={wine.region}
                   year={wine.year.toString()}
@@ -115,6 +120,7 @@ const WineShowcase = () => {
               {wines.filter(wine => wine.type === "champagne").map((wine) => (
                 <WineCard 
                   key={wine.id} 
+                  id={wine.id}
                   name={wine.name}
                   region={wine.region}
                   year={wine.year.toString()}

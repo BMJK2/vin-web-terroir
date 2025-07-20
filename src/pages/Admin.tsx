@@ -31,12 +31,13 @@ import {
   searchUsers,
   getUsersByRole 
 } from '@/data/users';
-import { wines, addWine, removeWine } from '@/data/wines';
+import { useWines } from '@/hooks/useWines';
 import { User } from '@/types/user';
 import { Wine } from '@/types/wine';
 
 const Admin = () => {
   const { user, isAdmin } = useAuth();
+  const { wines, addWine, removeWine } = useWines();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState<'all' | 'admin' | 'user'>('all');
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);

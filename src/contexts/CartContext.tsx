@@ -14,7 +14,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (wine: Omit<CartItem, 'id' | 'quantity'>) => void;
+  addToCart: (wine: Omit<CartItem, 'quantity'>) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -36,8 +36,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const { toast } = useToast();
 
-  const addToCart = (wine: Omit<CartItem, 'id' | 'quantity'>) => {
-    const id = `${wine.name}-${wine.year}`;
+  const addToCart = (wine: Omit<CartItem, 'quantity'>) => {
+    const id = wine.id;
     setItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === id);
       if (existingItem) {
@@ -53,7 +53,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           title: "Ajouté au panier",
           description: `${wine.name} a été ajouté à votre panier`,
         });
-        return [...prevItems, { ...wine, id, quantity: 1 }];
+        return [...prevItems, { ...wine, quantity: 1 }];
       }
     });
   };
