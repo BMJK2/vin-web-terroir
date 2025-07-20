@@ -248,3 +248,19 @@ export const searchWines = (query: string): Wine[] => {
     wine.grapes.some(grape => grape.toLowerCase().includes(lowercaseQuery))
   );
 };
+
+export const addWine = (wine: Omit<Wine, 'id'>): Wine => {
+  const newId = (Math.max(...wines.map(w => parseInt(w.id))) + 1).toString();
+  const newWine = { ...wine, id: newId };
+  wines.push(newWine);
+  return newWine;
+};
+
+export const removeWine = (id: string): boolean => {
+  const index = wines.findIndex(wine => wine.id === id);
+  if (index > -1) {
+    wines.splice(index, 1);
+    return true;
+  }
+  return false;
+};
