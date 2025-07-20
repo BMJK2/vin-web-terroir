@@ -156,11 +156,185 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Administration</h1>
-          <p className="text-muted-foreground">
-            Bienvenue {user?.name}, gérez votre boutique de vins
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Administration</h1>
+            <p className="text-muted-foreground">
+              Bienvenue {user?.name}, gérez votre boutique de vins
+            </p>
+          </div>
+          <Dialog open={isAddProductOpen} onOpenChange={setIsAddProductOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Ajouter un produit
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Ajouter un nouveau produit</DialogTitle>
+                <DialogDescription>
+                  Remplissez les informations du nouveau vin
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="name">Nom du vin*</Label>
+                    <Input
+                      id="name"
+                      value={newProduct.name}
+                      onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
+                      placeholder="Ex: Château Antananarivo Rouge"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="region">Région*</Label>
+                    <Input
+                      id="region"
+                      value={newProduct.region}
+                      onChange={(e) => setNewProduct({...newProduct, region: e.target.value})}
+                      placeholder="Ex: Hautes Terres"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="year">Année</Label>
+                      <Input
+                        id="year"
+                        type="number"
+                        value={newProduct.year}
+                        onChange={(e) => setNewProduct({...newProduct, year: parseInt(e.target.value)})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="price">Prix (€)</Label>
+                      <Input
+                        id="price"
+                        type="number"
+                        step="0.01"
+                        value={newProduct.price}
+                        onChange={(e) => setNewProduct({...newProduct, price: parseFloat(e.target.value)})}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="type">Type</Label>
+                      <Select value={newProduct.type} onValueChange={(value: any) => setNewProduct({...newProduct, type: value})}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="rouge">Rouge</SelectItem>
+                          <SelectItem value="blanc">Blanc</SelectItem>
+                          <SelectItem value="rosé">Rosé</SelectItem>
+                          <SelectItem value="champagne">Champagne</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="category">Catégorie</Label>
+                      <Select value={newProduct.category} onValueChange={(value: any) => setNewProduct({...newProduct, category: value})}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="tradition">Tradition</SelectItem>
+                          <SelectItem value="collection">Collection</SelectItem>
+                          <SelectItem value="premium">Premium</SelectItem>
+                          <SelectItem value="reserve">Réserve</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="description">Description*</Label>
+                    <Textarea
+                      id="description"
+                      value={newProduct.description}
+                      onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
+                      placeholder="Description du vin..."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="alcohol">Alcool (%)</Label>
+                      <Input
+                        id="alcohol"
+                        type="number"
+                        step="0.1"
+                        value={newProduct.alcohol}
+                        onChange={(e) => setNewProduct({...newProduct, alcohol: parseFloat(e.target.value)})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="rating">Note (0-5)</Label>
+                      <Input
+                        id="rating"
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        max="5"
+                        value={newProduct.rating}
+                        onChange={(e) => setNewProduct({...newProduct, rating: parseFloat(e.target.value)})}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="temperature">Température de service</Label>
+                    <Input
+                      id="temperature"
+                      value={newProduct.servingTemperature}
+                      onChange={(e) => setNewProduct({...newProduct, servingTemperature: e.target.value})}
+                      placeholder="Ex: 16-18°C"
+                    />
+                  </div>
+                  <div>
+                    <Label>Cépages</Label>
+                    {newProduct.grapes.map((grape, index) => (
+                      <Input
+                        key={index}
+                        value={grape}
+                        onChange={(e) => updateArrayField('grapes', index, e.target.value)}
+                        placeholder="Ex: Cabernet Sauvignon"
+                        className="mb-2"
+                      />
+                    ))}
+                    <Button type="button" variant="outline" size="sm" onClick={() => addArrayField('grapes')}>
+                      Ajouter un cépage
+                    </Button>
+                  </div>
+                  <div>
+                    <Label>Caractéristiques</Label>
+                    {newProduct.features.map((feature, index) => (
+                      <Input
+                        key={index}
+                        value={feature}
+                        onChange={(e) => updateArrayField('features', index, e.target.value)}
+                        placeholder="Ex: Élevage en fût de chêne"
+                        className="mb-2"
+                      />
+                    ))}
+                    <Button type="button" variant="outline" size="sm" onClick={() => addArrayField('features')}>
+                      Ajouter une caractéristique
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2 mt-6">
+                <Button variant="outline" onClick={() => setIsAddProductOpen(false)}>
+                  Annuler
+                </Button>
+                <Button onClick={handleAddProduct}>
+                  Ajouter le produit
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Statistiques */}
@@ -313,186 +487,10 @@ const Admin = () => {
           <TabsContent value="products" className="space-y-6">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Produits</CardTitle>
-                    <CardDescription>
-                      Gérez tous les vins de votre boutique
-                    </CardDescription>
-                  </div>
-                  <Dialog open={isAddProductOpen} onOpenChange={setIsAddProductOpen}>
-                    <DialogTrigger asChild>
-                      <Button>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Ajouter un produit
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Ajouter un nouveau produit</DialogTitle>
-                        <DialogDescription>
-                          Remplissez les informations du nouveau vin
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="name">Nom du vin*</Label>
-                            <Input
-                              id="name"
-                              value={newProduct.name}
-                              onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                              placeholder="Ex: Château Antananarivo Rouge"
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="region">Région*</Label>
-                            <Input
-                              id="region"
-                              value={newProduct.region}
-                              onChange={(e) => setNewProduct({...newProduct, region: e.target.value})}
-                              placeholder="Ex: Hautes Terres"
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="year">Année</Label>
-                              <Input
-                                id="year"
-                                type="number"
-                                value={newProduct.year}
-                                onChange={(e) => setNewProduct({...newProduct, year: parseInt(e.target.value)})}
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="price">Prix (€)</Label>
-                              <Input
-                                id="price"
-                                type="number"
-                                step="0.01"
-                                value={newProduct.price}
-                                onChange={(e) => setNewProduct({...newProduct, price: parseFloat(e.target.value)})}
-                              />
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="type">Type</Label>
-                              <Select value={newProduct.type} onValueChange={(value: any) => setNewProduct({...newProduct, type: value})}>
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="rouge">Rouge</SelectItem>
-                                  <SelectItem value="blanc">Blanc</SelectItem>
-                                  <SelectItem value="rosé">Rosé</SelectItem>
-                                  <SelectItem value="champagne">Champagne</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div>
-                              <Label htmlFor="category">Catégorie</Label>
-                              <Select value={newProduct.category} onValueChange={(value: any) => setNewProduct({...newProduct, category: value})}>
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="tradition">Tradition</SelectItem>
-                                  <SelectItem value="collection">Collection</SelectItem>
-                                  <SelectItem value="premium">Premium</SelectItem>
-                                  <SelectItem value="reserve">Réserve</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                          <div>
-                            <Label htmlFor="description">Description*</Label>
-                            <Textarea
-                              id="description"
-                              value={newProduct.description}
-                              onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
-                              placeholder="Description du vin..."
-                              rows={3}
-                            />
-                          </div>
-                        </div>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor="alcohol">Alcool (%)</Label>
-                              <Input
-                                id="alcohol"
-                                type="number"
-                                step="0.1"
-                                value={newProduct.alcohol}
-                                onChange={(e) => setNewProduct({...newProduct, alcohol: parseFloat(e.target.value)})}
-                              />
-                            </div>
-                            <div>
-                              <Label htmlFor="rating">Note (0-5)</Label>
-                              <Input
-                                id="rating"
-                                type="number"
-                                step="0.1"
-                                min="0"
-                                max="5"
-                                value={newProduct.rating}
-                                onChange={(e) => setNewProduct({...newProduct, rating: parseFloat(e.target.value)})}
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <Label htmlFor="temperature">Température de service</Label>
-                            <Input
-                              id="temperature"
-                              value={newProduct.servingTemperature}
-                              onChange={(e) => setNewProduct({...newProduct, servingTemperature: e.target.value})}
-                              placeholder="Ex: 16-18°C"
-                            />
-                          </div>
-                          <div>
-                            <Label>Cépages</Label>
-                            {newProduct.grapes.map((grape, index) => (
-                              <Input
-                                key={index}
-                                value={grape}
-                                onChange={(e) => updateArrayField('grapes', index, e.target.value)}
-                                placeholder="Ex: Cabernet Sauvignon"
-                                className="mb-2"
-                              />
-                            ))}
-                            <Button type="button" variant="outline" size="sm" onClick={() => addArrayField('grapes')}>
-                              Ajouter un cépage
-                            </Button>
-                          </div>
-                          <div>
-                            <Label>Caractéristiques</Label>
-                            {newProduct.features.map((feature, index) => (
-                              <Input
-                                key={index}
-                                value={feature}
-                                onChange={(e) => updateArrayField('features', index, e.target.value)}
-                                placeholder="Ex: Élevage en fût de chêne"
-                                className="mb-2"
-                              />
-                            ))}
-                            <Button type="button" variant="outline" size="sm" onClick={() => addArrayField('features')}>
-                              Ajouter une caractéristique
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex justify-end space-x-2 mt-6">
-                        <Button variant="outline" onClick={() => setIsAddProductOpen(false)}>
-                          Annuler
-                        </Button>
-                        <Button onClick={handleAddProduct}>
-                          Ajouter le produit
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+                <CardTitle>Produits</CardTitle>
+                <CardDescription>
+                  Gérez tous les vins de votre boutique
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
