@@ -171,14 +171,14 @@ const Admin = () => {
                 Ajouter un produit
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="w-[95vw] max-w-4xl mx-auto max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Ajouter un nouveau produit</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-lg sm:text-xl">Ajouter un nouveau produit</DialogTitle>
+                <DialogDescription className="text-sm sm:text-base">
                   Remplissez les informations du nouveau vin
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="name">Nom du vin*</Label>
@@ -198,7 +198,7 @@ const Admin = () => {
                       placeholder="Ex: Hautes Terres"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="year">Année</Label>
                       <Input
@@ -219,7 +219,7 @@ const Admin = () => {
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="type">Type</Label>
                       <Select value={newProduct.type} onValueChange={(value: any) => setNewProduct({...newProduct, type: value})}>
@@ -261,7 +261,7 @@ const Admin = () => {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="alcohol">Alcool (%)</Label>
                       <Input
@@ -326,11 +326,11 @@ const Admin = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end space-x-2 mt-6">
-                <Button variant="outline" onClick={() => setIsAddProductOpen(false)}>
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:space-x-2 mt-6">
+                <Button variant="outline" onClick={() => setIsAddProductOpen(false)} className="w-full sm:w-auto">
                   Annuler
                 </Button>
-                <Button onClick={handleAddProduct}>
+                <Button onClick={handleAddProduct} className="w-full sm:w-auto">
                   Ajouter le produit
                 </Button>
               </div>

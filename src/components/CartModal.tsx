@@ -40,7 +40,7 @@ const CartModal = ({ open, onOpenChange }: CartModalProps) => {
   if (items.length === 0) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="w-[95vw] max-w-lg mx-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ShoppingBag className="h-5 w-5" />
@@ -65,12 +65,12 @@ const CartModal = ({ open, onOpenChange }: CartModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-2xl mx-auto max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
+          <DialogTitle className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <ShoppingBag className="h-5 w-5" />
-              Votre Panier ({totalItems} article{totalItems > 1 ? 's' : ''})
+              <span className="text-sm sm:text-base">Votre Panier ({totalItems} article{totalItems > 1 ? 's' : ''})</span>
             </div>
             <Button
               variant="ghost"
@@ -86,21 +86,21 @@ const CartModal = ({ open, onOpenChange }: CartModalProps) => {
 
         <div className="space-y-4">
           {items.map((item) => (
-            <div key={item.id} className="flex gap-4 p-4 border rounded-lg">
+            <div key={item.id} className="flex flex-col sm:flex-row gap-4 p-3 sm:p-4 border rounded-lg">
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-16 h-16 object-cover rounded"
+                className="w-full sm:w-16 h-32 sm:h-16 object-cover rounded"
               />
               
               <div className="flex-1 space-y-2">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="font-semibold text-wine-burgundy">{item.name}</h4>
-                    <p className="text-sm text-muted-foreground">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-semibold text-wine-burgundy text-sm sm:text-base break-words">{item.name}</h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       {item.region} • {item.year}
                     </p>
-                    <Badge variant="outline" className="mt-1">
+                    <Badge variant="outline" className="mt-1 text-xs">
                       {item.type}
                     </Badge>
                   </div>
@@ -114,7 +114,7 @@ const CartModal = ({ open, onOpenChange }: CartModalProps) => {
                   </Button>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
@@ -137,11 +137,11 @@ const CartModal = ({ open, onOpenChange }: CartModalProps) => {
                     </Button>
                   </div>
 
-                  <div className="text-right">
-                    <div className="font-semibold text-wine-burgundy">
+                  <div className="text-left sm:text-right">
+                    <div className="font-semibold text-wine-burgundy text-sm sm:text-base">
                       {(item.price * item.quantity).toFixed(2)}€
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-xs sm:text-sm text-muted-foreground">
                       {item.price}€ l'unité
                     </div>
                   </div>
@@ -159,25 +159,26 @@ const CartModal = ({ open, onOpenChange }: CartModalProps) => {
             <span className="text-wine-burgundy">{totalPrice.toFixed(2)}€</span>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button 
               variant="outline" 
-              className="flex-1"
+              className="flex-1 text-sm sm:text-base"
               onClick={() => onOpenChange(false)}
             >
               Continuer les achats
             </Button>
             <Button 
               variant="wine" 
-              className="flex-1"
+              className="flex-1 text-sm sm:text-base"
               onClick={handleCheckout}
             >
               {isAuthenticated ? (
                 "Valider la commande"
               ) : (
                 <>
-                  <User className="mr-2 h-4 w-4" />
-                  Se connecter pour commander
+                  <User className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Se connecter pour commander</span>
+                  <span className="sm:hidden">Se connecter</span>
                 </>
               )}
             </Button>
