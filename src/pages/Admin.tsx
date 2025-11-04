@@ -24,13 +24,6 @@ import {
   Package,
   Trash2
 } from 'lucide-react';
-import { 
-  getAdminStats, 
-  getRecentUsers, 
-  getTopCustomers,
-  searchUsers,
-  getUsersByRole 
-} from '@/data/users';
 import { useWines } from '@/hooks/useWines';
 import { useUsers } from '@/hooks/useUsers';
 import { User } from '@/types/user';
@@ -41,7 +34,15 @@ import { toast } from '@/hooks/use-toast';
 const Admin = () => {
   const { user, isAdmin } = useAuth();
   const { wines, addWine, removeWine } = useWines();
-  const { users, removeUser } = useUsers();
+  const { 
+    users, 
+    removeUser, 
+    searchUsers, 
+    getUsersByRole,
+    getAdminStats,
+    getRecentUsers,
+    getTopCustomers 
+  } = useUsers();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState<'all' | 'admin' | 'user'>('all');
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
@@ -98,7 +99,7 @@ const Admin = () => {
     }
     
     return filtered;
-  }, [searchQuery, selectedRole]);
+  }, [searchQuery, selectedRole, users, searchUsers, getUsersByRole]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('fr-FR', {
