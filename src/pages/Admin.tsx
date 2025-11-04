@@ -21,10 +21,10 @@ import {
   UserCheck,
   UserX,
   Plus,
-  Package
+  Package,
+  Trash2
 } from 'lucide-react';
 import { 
-  users, 
   getAdminStats, 
   getRecentUsers, 
   getTopCustomers,
@@ -32,15 +32,20 @@ import {
   getUsersByRole 
 } from '@/data/users';
 import { useWines } from '@/hooks/useWines';
+import { useUsers } from '@/hooks/useUsers';
 import { User } from '@/types/user';
 import { Wine } from '@/types/wine';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { toast } from '@/hooks/use-toast';
 
 const Admin = () => {
   const { user, isAdmin } = useAuth();
   const { wines, addWine, removeWine } = useWines();
+  const { users, removeUser } = useUsers();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState<'all' | 'admin' | 'user'>('all');
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [newProduct, setNewProduct] = useState({
     name: '',
     region: '',
@@ -152,6 +157,17 @@ const Admin = () => {
   const addArrayField = (field: keyof typeof newProduct) => {
     const currentArray = newProduct[field] as string[];
     setNewProduct({ ...newProduct, [field]: [...currentArray, ''] });
+  };
+
+  const handleDeleteUser = () => {
+    if (userToDelete) {
+      removeUser(userToDelete.id);
+      toast({
+        title: "Utilisateur supprimé",
+        description: `${userToDelete.name} a été supprimé avec succès.`,
+      });
+      setUserToDelete(null);
+    }
   };
 
   return (
@@ -474,8 +490,12 @@ const Admin = () => {
                             <><UserX className="w-3 h-3 mr-1" /> Inactif</>
                           )}
                         </Badge>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontal className="h-4 w-4" />
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => setUserToDelete(user)}
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
@@ -602,6 +622,24 @@ const Admin = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      <AlertDialog open={!!userToDelete} onOpenChange={() => setUserToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir supprimer l'utilisateur <strong>{userToDelete?.name}</strong> ({userToDelete?.email}) ?
+              Cette action est irréversible.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteUser} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
