@@ -5,6 +5,7 @@ import { getUsersByEmail } from '@/data/users';
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -61,6 +62,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return false;
   };
 
+  const register = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true);
+    
+    // Simulation d'un délai d'inscription
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Vérifier si l'email existe déjà
+    const existingUser = getUsersByEmail(email);
+    if (existingUser) {
+      setIsLoading(false);
+      return { success: false, error: 'Cet email est déjà utilisé' };
+    }
+    
+    // Créer un nouvel utilisateur
+    const newUser: User = {
+      id: `user-${Date.now()}`,
+      name,
+      email,
+      role: 'user',
+      createdAt: new Date().toISOString(),
+      isActive: true,
+      preferences: {
+        newsletter: false,
+        notifications: true,
+        language: 'fr'
+      }
+    };
+    
+    setUser(newUser);
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    setIsLoading(false);
+    return { success: true };
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('currentUser');
@@ -74,6 +109,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       value={{
         user,
         login,
+        register,
         logout,
         isLoading,
         isAuthenticated,

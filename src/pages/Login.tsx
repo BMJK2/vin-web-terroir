@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -117,6 +117,16 @@ const Login = () => {
                   'Se connecter'
                 )}
               </Button>
+
+              <div className="text-center text-sm mt-4">
+                <span className="text-muted-foreground">Pas encore de compte ? </span>
+                <Link
+                  to="/register"
+                  className="text-wine-600 hover:text-wine-700 dark:text-wine-400 dark:hover:text-wine-300 font-medium transition-colors"
+                >
+                  Créer un compte
+                </Link>
+              </div>
             </form>
           </CardContent>
         </Card>
