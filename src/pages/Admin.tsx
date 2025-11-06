@@ -276,6 +276,15 @@ const Admin = () => {
                       rows={3}
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="image">URL de l'image*</Label>
+                    <Input
+                      id="image"
+                      value={newProduct.image}
+                      onChange={(e) => setNewProduct({...newProduct, image: e.target.value})}
+                      placeholder="Ex: /assets/wine-red-1.jpg"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
