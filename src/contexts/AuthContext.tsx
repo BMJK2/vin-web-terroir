@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types/user';
-import { getUsersByEmail } from '@/data/users';
+import { supabase } from '@/integrations/supabase/client';
+import { User as SupabaseUser, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
@@ -28,77 +29,114 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Vérifier si l'utilisateur est déjà connecté au chargement
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+  const loadUserProfile = async (userId: string) => {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    const { data: roles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+
+    if (profile) {
+      const userRole = roles?.find(r => r.role === 'admin') ? 'admin' : 'user';
+      const userData: User = {
+        id: profile.user_id,
+        name: profile.name,
+        email: profile.email,
+        phone: profile.phone,
+        address: profile.address,
+        role: userRole,
+        isActive: profile.is_active,
+        createdAt: profile.created_at,
+        preferences: {
+          newsletter: false,
+          notifications: true,
+          language: 'fr'
+        }
+      };
+      setUser(userData);
     }
-    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        if (session?.user) {
+          loadUserProfile(session.user.id);
+        } else {
+          setUser(null);
+        }
+        setIsLoading(false);
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        loadUserProfile(session.user.id);
+      }
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     
-    // Simulation d'un délai de connexion
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     
-    const foundUser = getUsersByEmail(email);
-    
-    if (foundUser && foundUser.isActive) {
-      // Dans un vrai système, on vérifierait le mot de passe
-      // Ici on simule avec un mot de passe simple: "password"
-      if (password === 'password') {
-        setUser(foundUser);
-        localStorage.setItem('currentUser', JSON.stringify(foundUser));
-        setIsLoading(false);
-        return true;
-      }
+    if (error) {
+      console.error('Erreur de connexion:', error.message);
+      setIsLoading(false);
+      return false;
     }
     
     setIsLoading(false);
-    return false;
+    return true;
   };
 
   const register = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
     
-    // Simulation d'un délai d'inscription
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+        data: {
+          name: name,
+        }
+      }
+    });
     
-    // Vérifier si l'email existe déjà
-    const existingUser = getUsersByEmail(email);
-    if (existingUser) {
+    if (error) {
+      console.error('Erreur d\'inscription:', error.message);
       setIsLoading(false);
-      return { success: false, error: 'Cet email est déjà utilisé' };
+      return { success: false, error: error.message };
     }
     
-    // Créer un nouvel utilisateur
-    const newUser: User = {
-      id: `user-${Date.now()}`,
-      name,
-      email,
-      role: 'user',
-      createdAt: new Date().toISOString(),
-      isActive: true,
-      preferences: {
-        newsletter: false,
-        notifications: true,
-        language: 'fr'
-      }
-    };
-    
-    setUser(newUser);
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
     setIsLoading(false);
     return { success: true };
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem('currentUser');
+    setSession(null);
   };
 
   const isAuthenticated = !!user;

@@ -1,66 +1,140 @@
 import { useState, useEffect } from 'react';
 import { Wine } from '@/types/wine';
-import { wines as initialWines } from '@/data/wines';
+import { supabase } from '@/integrations/supabase/client';
 
-// État global pour les vins
-let globalWines: Wine[] = [...initialWines];
-let listeners: Array<() => void> = [];
-
-// Fonction pour notifier tous les listeners
-const notifyListeners = () => {
-  listeners.forEach(listener => listener());
-};
-
-// Fonctions pour manipuler les vins
-export const addWineToGlobal = (wine: Omit<Wine, 'id'>): Wine => {
-  const newId = (Math.max(...globalWines.map(w => parseInt(w.id))) + 1).toString();
-  const newWine = { ...wine, id: newId };
-  globalWines.push(newWine);
-  notifyListeners();
-  return newWine;
-};
-
-export const removeWineFromGlobal = (id: string): boolean => {
-  const index = globalWines.findIndex(wine => wine.id === id);
-  if (index > -1) {
-    globalWines.splice(index, 1);
-    notifyListeners();
-    return true;
-  }
-  return false;
-};
-
-export const updateWineInGlobal = (id: string, updatedWine: Partial<Wine>): boolean => {
-  const index = globalWines.findIndex(wine => wine.id === id);
-  if (index > -1) {
-    globalWines[index] = { ...globalWines[index], ...updatedWine };
-    notifyListeners();
-    return true;
-  }
-  return false;
-};
-
-// Hook personnalisé pour utiliser les vins
 export const useWines = () => {
-  const [wines, setWines] = useState<Wine[]>([...globalWines]);
+  const [wines, setWines] = useState<Wine[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadWines = async () => {
+    setIsLoading(true);
+    const { data, error } = await supabase
+      .from('wines')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Erreur lors du chargement des vins:', error);
+    } else if (data) {
+      const mappedWines: Wine[] = data.map(wine => ({
+        id: wine.id,
+        name: wine.name,
+        region: wine.region,
+        year: wine.year,
+        price: typeof wine.price === 'string' ? parseFloat(wine.price) : wine.price,
+        rating: typeof wine.rating === 'string' ? parseFloat(wine.rating) : (wine.rating || 0),
+        description: wine.description,
+        image: wine.image,
+        type: wine.type as any,
+        category: wine.category as any,
+        alcohol: typeof wine.alcohol === 'string' ? parseFloat(wine.alcohol) : (wine.alcohol || 0),
+        volume: wine.volume,
+        servingTemperature: wine.serving_temperature || '',
+        features: wine.features || [],
+        images: wine.images || [],
+        grapes: wine.grapes || [],
+        pairingNotes: wine.pairing_notes || []
+      }));
+      setWines(mappedWines);
+    }
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const listener = () => {
-      setWines([...globalWines]);
-    };
-
-    listeners.push(listener);
-
-    return () => {
-      listeners = listeners.filter(l => l !== listener);
-    };
+    loadWines();
   }, []);
+
+  const addWine = async (wine: Omit<Wine, 'id'>): Promise<Wine | null> => {
+    const { data, error } = await supabase
+      .from('wines')
+      .insert({
+        name: wine.name,
+        region: wine.region,
+        year: wine.year,
+        price: wine.price,
+        rating: wine.rating,
+        description: wine.description,
+        image: wine.image,
+        type: wine.type,
+        category: wine.category,
+        alcohol: wine.alcohol,
+        volume: wine.volume,
+        serving_temperature: wine.servingTemperature,
+        features: wine.features,
+        images: wine.images,
+        grapes: wine.grapes,
+        pairing_notes: wine.pairingNotes,
+        stock: 0,
+        is_active: true
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Erreur lors de l\'ajout du vin:', error);
+      return null;
+    }
+
+    await loadWines();
+    return data as any;
+  };
+
+  const removeWine = async (id: string): Promise<boolean> => {
+    const { error } = await supabase
+      .from('wines')
+      .update({ is_active: false })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erreur lors de la suppression du vin:', error);
+      return false;
+    }
+
+    await loadWines();
+    return true;
+  };
+
+  const updateWine = async (id: string, updatedWine: Partial<Wine>): Promise<boolean> => {
+    const updateData: any = {};
+    if (updatedWine.name) updateData.name = updatedWine.name;
+    if (updatedWine.region) updateData.region = updatedWine.region;
+    if (updatedWine.year) updateData.year = updatedWine.year;
+    if (updatedWine.price !== undefined) updateData.price = updatedWine.price;
+    if (updatedWine.rating !== undefined) updateData.rating = updatedWine.rating;
+    if (updatedWine.description) updateData.description = updatedWine.description;
+    if (updatedWine.image) updateData.image = updatedWine.image;
+    if (updatedWine.type) updateData.type = updatedWine.type;
+    if (updatedWine.category) updateData.category = updatedWine.category;
+    if (updatedWine.alcohol !== undefined) updateData.alcohol = updatedWine.alcohol;
+    if (updatedWine.volume) updateData.volume = updatedWine.volume;
+    if (updatedWine.servingTemperature) updateData.serving_temperature = updatedWine.servingTemperature;
+    if (updatedWine.features) updateData.features = updatedWine.features;
+    if (updatedWine.images) updateData.images = updatedWine.images;
+    if (updatedWine.grapes) updateData.grapes = updatedWine.grapes;
+    if (updatedWine.pairingNotes) updateData.pairing_notes = updatedWine.pairingNotes;
+
+    const { error } = await supabase
+      .from('wines')
+      .update(updateData)
+      .eq('id', id);
+
+    if (error) {
+      console.error('Erreur lors de la mise à jour du vin:', error);
+      return false;
+    }
+
+    await loadWines();
+    return true;
+  };
 
   return {
     wines,
-    addWine: addWineToGlobal,
-    removeWine: removeWineFromGlobal,
-    updateWine: updateWineInGlobal,
+    isLoading,
+    addWine,
+    removeWine,
+    updateWine,
+    refreshWines: loadWines,
     getWineById: (id: string) => wines.find(wine => wine.id === id),
     getWinesByType: (type: string) => wines.filter(wine => wine.type === type),
     getWinesByRegion: (region: string) => wines.filter(wine => wine.region.toLowerCase() === region.toLowerCase()),

@@ -1,33 +1,108 @@
 import { useState, useEffect } from 'react';
 import { User, AdminStats } from '@/types/user';
-import { users as initialUsers } from '@/data/users';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Charger les utilisateurs depuis localStorage ou utiliser les données initiales
-    const savedUsers = localStorage.getItem('users');
-    if (savedUsers) {
-      setUsers(JSON.parse(savedUsers));
-    } else {
-      setUsers(initialUsers);
-      localStorage.setItem('users', JSON.stringify(initialUsers));
+  const loadUsers = async () => {
+    setIsLoading(true);
+    
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (profilesError) {
+      console.error('Erreur lors du chargement des profils:', profilesError);
+      setIsLoading(false);
+      return;
     }
-  }, []);
 
-  const removeUser = (userId: string) => {
-    const updatedUsers = users.filter(user => user.id !== userId);
-    setUsers(updatedUsers);
-    localStorage.setItem('users', JSON.stringify(updatedUsers));
+    if (profiles) {
+      const usersWithRoles = await Promise.all(
+        profiles.map(async (profile) => {
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', profile.user_id);
+
+          const { data: orders } = await supabase
+            .from('orders')
+            .select('id, total, status, created_at')
+            .eq('user_id', profile.user_id);
+
+          const userRole = roles?.find(r => r.role === 'admin') ? 'admin' : 'user';
+          
+          return {
+            id: profile.user_id,
+            name: profile.name,
+            email: profile.email,
+            phone: profile.phone,
+            address: profile.address,
+            role: userRole,
+            isActive: profile.is_active,
+            createdAt: profile.created_at,
+            preferences: {
+              newsletter: false,
+              notifications: true,
+              language: 'fr'
+            },
+            orders: orders?.map(o => ({
+              id: o.id,
+              date: o.created_at,
+              total: typeof o.total === 'string' ? parseFloat(o.total) : o.total,
+              status: o.status,
+              items: []
+            }))
+          } as User;
+        })
+      );
+      
+      setUsers(usersWithRoles);
+    }
+    
+    setIsLoading(false);
   };
 
-  const updateUser = (userId: string, updatedData: Partial<User>) => {
-    const updatedUsers = users.map(user =>
-      user.id === userId ? { ...user, ...updatedData } : user
-    );
-    setUsers(updatedUsers);
-    localStorage.setItem('users', JSON.stringify(updatedUsers));
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const removeUser = async (userId: string) => {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ is_active: false })
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Erreur lors de la suppression de l\'utilisateur:', error);
+      return;
+    }
+
+    await loadUsers();
+  };
+
+  const updateUser = async (userId: string, updatedData: Partial<User>) => {
+    const updateProfile: any = {};
+    if (updatedData.name) updateProfile.name = updatedData.name;
+    if (updatedData.email) updateProfile.email = updatedData.email;
+    if (updatedData.phone !== undefined) updateProfile.phone = updatedData.phone;
+    if (updatedData.address !== undefined) updateProfile.address = updatedData.address;
+    if (updatedData.isActive !== undefined) updateProfile.is_active = updatedData.isActive;
+
+    const { error } = await supabase
+      .from('profiles')
+      .update(updateProfile)
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
+      return;
+    }
+
+    await loadUsers();
   };
 
   const getActiveUsers = () => users.filter(user => user.isActive);
@@ -88,12 +163,14 @@ export const useUsers = () => {
 
   return {
     users,
+    isLoading,
     removeUser,
     updateUser,
     searchUsers,
     getUsersByRole,
     getAdminStats,
     getRecentUsers,
-    getTopCustomers
+    getTopCustomers,
+    refreshUsers: loadUsers
   };
 };
