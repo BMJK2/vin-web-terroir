@@ -43,15 +43,9 @@ const Login = () => {
     }
   };
 
-  const demoCredentials = [
-    { email: 'jean.dupont@email.com', role: 'Administrateur' },
-    { email: 'marie.martin@email.com', role: 'Utilisateur' },
-    { email: 'sophie.leclerc@email.com', role: 'Administrateur' },
-  ];
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary/20 p-4">
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold">Connexion</CardTitle>
@@ -128,29 +122,6 @@ const Login = () => {
                 </Link>
               </div>
             </form>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Comptes de démonstration</CardTitle>
-            <CardDescription>
-              Utilisez ces comptes pour tester l'application (mot de passe: password)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {demoCredentials.map((cred, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-2 border rounded cursor-pointer hover:bg-muted/50"
-                  onClick={() => setEmail(cred.email)}
-                >
-                  <span className="text-sm font-medium">{cred.email}</span>
-                  <span className="text-xs text-muted-foreground">{cred.role}</span>
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
       </div>
