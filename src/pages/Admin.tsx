@@ -23,7 +23,8 @@ import {
   Plus,
   Package,
   Trash2,
-  Eye
+  Eye,
+  Edit
 } from 'lucide-react';
 import { useWines } from '@/hooks/useWines';
 import { useUsers } from '@/hooks/useUsers';
@@ -32,10 +33,11 @@ import { Wine } from '@/types/wine';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { toast } from '@/hooks/use-toast';
 import { UserDetailDialog } from '@/components/admin/UserDetailDialog';
+import { EditWineDialog } from '@/components/admin/EditWineDialog';
 
 const Admin = () => {
   const { user, isAdmin } = useAuth();
-  const { wines, addWine, removeWine } = useWines();
+  const { wines, addWine, removeWine, updateWine } = useWines();
   const { 
     users, 
     removeUser, 
@@ -50,6 +52,7 @@ const Admin = () => {
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [wineToEdit, setWineToEdit] = useState<Wine | null>(null);
   const [newProduct, setNewProduct] = useState({
     name: '',
     region: '',
@@ -560,11 +563,18 @@ const Admin = () => {
                           {wine.type}
                         </Badge>
                         <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setWineToEdit(wine)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button 
                           variant="destructive" 
                           size="sm"
                           onClick={() => removeWine(wine.id)}
                         >
-                          Supprimer
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
@@ -647,6 +657,13 @@ const Admin = () => {
         user={selectedUser} 
         open={!!selectedUser} 
         onOpenChange={(open) => !open && setSelectedUser(null)} 
+      />
+
+      <EditWineDialog
+        wine={wineToEdit}
+        open={!!wineToEdit}
+        onOpenChange={(open) => !open && setWineToEdit(null)}
+        onUpdate={updateWine}
       />
 
       <AlertDialog open={!!userToDelete} onOpenChange={() => setUserToDelete(null)}>
