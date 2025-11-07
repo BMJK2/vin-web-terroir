@@ -22,7 +22,8 @@ import {
   UserX,
   Plus,
   Package,
-  Trash2
+  Trash2,
+  Eye
 } from 'lucide-react';
 import { useWines } from '@/hooks/useWines';
 import { useUsers } from '@/hooks/useUsers';
@@ -30,6 +31,7 @@ import { User } from '@/types/user';
 import { Wine } from '@/types/wine';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { toast } from '@/hooks/use-toast';
+import { UserDetailDialog } from '@/components/admin/UserDetailDialog';
 
 const Admin = () => {
   const { user, isAdmin } = useAuth();
@@ -47,6 +49,7 @@ const Admin = () => {
   const [selectedRole, setSelectedRole] = useState<'all' | 'admin' | 'user'>('all');
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newProduct, setNewProduct] = useState({
     name: '',
     region: '',
@@ -501,6 +504,13 @@ const Admin = () => {
                           )}
                         </Badge>
                         <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setSelectedUser(user)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button 
                           variant="destructive" 
                           size="sm"
                           onClick={() => setUserToDelete(user)}
@@ -632,6 +642,12 @@ const Admin = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      <UserDetailDialog 
+        user={selectedUser} 
+        open={!!selectedUser} 
+        onOpenChange={(open) => !open && setSelectedUser(null)} 
+      />
 
       <AlertDialog open={!!userToDelete} onOpenChange={() => setUserToDelete(null)}>
         <AlertDialogContent>
