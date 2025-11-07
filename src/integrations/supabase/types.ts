@@ -83,36 +83,90 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_methods: {
+        Row: {
+          card_brand: string | null
+          card_exp_month: number | null
+          card_exp_year: number | null
+          card_last_four: string | null
+          created_at: string | null
+          id: string
+          is_default: boolean | null
+          type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          card_brand?: string | null
+          card_exp_month?: number | null
+          card_exp_year?: number | null
+          card_last_four?: string | null
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          card_brand?: string | null
+          card_exp_month?: number | null
+          card_exp_year?: number | null
+          card_last_four?: string | null
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
+          avatar_url: string | null
           created_at: string | null
+          date_of_birth: string | null
           email: string
           id: string
           is_active: boolean | null
+          language: string | null
           name: string
+          newsletter: boolean | null
+          notifications: boolean | null
           phone: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           address?: string | null
+          avatar_url?: string | null
           created_at?: string | null
+          date_of_birth?: string | null
           email: string
           id?: string
           is_active?: boolean | null
+          language?: string | null
           name: string
+          newsletter?: boolean | null
+          notifications?: boolean | null
           phone?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           address?: string | null
+          avatar_url?: string | null
           created_at?: string | null
+          date_of_birth?: string | null
           email?: string
           id?: string
           is_active?: boolean | null
+          language?: string | null
           name?: string
+          newsletter?: boolean | null
+          notifications?: boolean | null
           phone?: string | null
           updated_at?: string | null
           user_id?: string

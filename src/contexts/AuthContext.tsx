@@ -52,13 +52,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         email: profile.email,
         phone: profile.phone,
         address: profile.address,
+        avatar: profile.avatar_url,
         role: userRole,
         isActive: profile.is_active,
         createdAt: profile.created_at,
         preferences: {
-          newsletter: false,
-          notifications: true,
-          language: 'fr'
+          newsletter: profile.newsletter || false,
+          notifications: profile.notifications !== false,
+          language: (profile.language || 'fr') as 'fr' | 'en'
         }
       };
       setUser(userData);
