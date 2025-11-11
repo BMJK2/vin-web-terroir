@@ -43,21 +43,40 @@ export const AddPaymentMethodDialog = ({
 
     setLoading(true);
 
-    const lastFour = formData.cardNumber.slice(-4);
-
-    const { error } = await supabase.from("payment_methods").insert({
+    let paymentData: any = {
       user_id: user.id,
       type: formData.type,
-      card_last_four: lastFour,
-      card_brand: formData.cardBrand,
-      card_exp_month: parseInt(formData.expMonth),
-      card_exp_year: parseInt(formData.expYear),
       is_default: false,
-    });
+    };
+
+    // Only add card-specific data if type is card
+    if (formData.type === "card") {
+      if (!formData.cardNumber || !formData.expMonth || !formData.expYear) {
+        toast({
+          title: "Erreur",
+          description: "Veuillez remplir tous les champs de la carte",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      const lastFour = formData.cardNumber.slice(-4);
+      paymentData = {
+        ...paymentData,
+        card_last_four: lastFour,
+        card_brand: formData.cardBrand,
+        card_exp_month: parseInt(formData.expMonth),
+        card_exp_year: parseInt(formData.expYear),
+      };
+    }
+
+    const { error } = await supabase.from("payment_methods").insert(paymentData);
 
     setLoading(false);
 
     if (error) {
+      console.error("Error adding payment method:", error);
       toast({
         title: "Erreur",
         description: "Impossible d'ajouter la méthode de paiement",
@@ -123,7 +142,6 @@ export const AddPaymentMethodDialog = ({
                   }
                   placeholder="1234 5678 9012 3456"
                   maxLength={16}
-                  required
                 />
               </div>
 
@@ -159,7 +177,6 @@ export const AddPaymentMethodDialog = ({
                     type="number"
                     min="1"
                     max="12"
-                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -173,11 +190,26 @@ export const AddPaymentMethodDialog = ({
                     placeholder="YYYY"
                     type="number"
                     min={new Date().getFullYear()}
-                    required
                   />
                 </div>
               </div>
             </>
+          )}
+
+          {formData.type === "paypal" && (
+            <div className="p-4 bg-muted rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                Vous serez redirigé vers PayPal pour connecter votre compte lors du paiement.
+              </p>
+            </div>
+          )}
+
+          {formData.type === "bank_transfer" && (
+            <div className="p-4 bg-muted rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                Les instructions de virement bancaire seront fournies après la validation de votre commande.
+              </p>
+            </div>
           )}
 
           <div className="flex gap-2 justify-end">
