@@ -33,37 +33,46 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const loadUserProfile = async (userId: string) => {
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('*')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
+
+    // If there's an error or no profile, log it but don't fail
+    if (profileError) {
+      console.error('Error loading profile:', profileError);
+      return;
+    }
+
+    if (!profile) {
+      console.warn('No profile found for user:', userId);
+      return;
+    }
 
     const { data: roles } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', userId);
 
-    if (profile) {
-      const userRole = roles?.find(r => r.role === 'admin') ? 'admin' : 'user';
-      const userData: User = {
-        id: profile.user_id,
-        name: profile.name,
-        email: profile.email,
-        phone: profile.phone,
-        address: profile.address,
-        avatar: profile.avatar_url,
-        role: userRole,
-        isActive: profile.is_active,
-        createdAt: profile.created_at,
-        preferences: {
-          newsletter: profile.newsletter || false,
-          notifications: profile.notifications !== false,
-          language: (profile.language || 'fr') as 'fr' | 'en'
-        }
-      };
-      setUser(userData);
-    }
+    const userRole = roles?.find(r => r.role === 'admin') ? 'admin' : 'user';
+    const userData: User = {
+      id: profile.user_id,
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone,
+      address: profile.address,
+      avatar: profile.avatar_url,
+      role: userRole,
+      isActive: profile.is_active,
+      createdAt: profile.created_at,
+      preferences: {
+        newsletter: profile.newsletter || false,
+        notifications: profile.notifications !== false,
+        language: (profile.language || 'fr') as 'fr' | 'en'
+      }
+    };
+    setUser(userData);
   };
 
   useEffect(() => {
