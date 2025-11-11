@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Link } from 'react-router-dom';
 import { 
   Users, 
   ShoppingCart, 
@@ -24,7 +25,8 @@ import {
   Package,
   Trash2,
   Eye,
-  Edit
+  Edit,
+  Home
 } from 'lucide-react';
 import { useWines } from '@/hooks/useWines';
 import { useUsers } from '@/hooks/useUsers';
@@ -181,11 +183,18 @@ const Admin = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Administration</h1>
-            <p className="text-muted-foreground">
-              Bienvenue {user?.name}, gérez votre boutique de vins
-            </p>
+          <div className="flex items-center gap-4">
+            <Link to="/">
+              <Button variant="outline" size="icon">
+                <Home className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Administration</h1>
+              <p className="text-muted-foreground">
+                Bienvenue {user?.name}, gérez votre boutique de vins
+              </p>
+            </div>
           </div>
           <Dialog open={isAddProductOpen} onOpenChange={setIsAddProductOpen}>
             <DialogTrigger asChild>

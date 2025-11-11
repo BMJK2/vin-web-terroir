@@ -1,11 +1,12 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { PaymentMethods } from "@/components/profile/PaymentMethods";
 import { OrderHistory } from "@/components/profile/OrderHistory";
-import { User, CreditCard, ShoppingBag } from "lucide-react";
+import { User, CreditCard, ShoppingBag, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Profile = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -25,7 +26,14 @@ const Profile = () => {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Mon Profil</h1>
+        <div className="flex items-center gap-4 mb-8">
+          <Link to="/">
+            <Button variant="outline" size="icon">
+              <Home className="h-4 w-4" />
+            </Button>
+          </Link>
+          <h1 className="text-3xl font-bold">Mon Profil</h1>
+        </div>
         
         <Tabs defaultValue="profile" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
