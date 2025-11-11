@@ -157,23 +157,25 @@ export const PaymentMethods = () => {
                 >
                   <div className="flex items-center gap-4">
                     <div className="text-2xl">
-                      {method.type === "card" ? getCardBrandIcon(method.card_brand) : "💰"}
+                      {method.type === "card" && getCardBrandIcon(method.card_brand)}
+                      {method.type === "paypal" && "💙"}
+                      {method.type === "bank_transfer" && "🏦"}
                     </div>
                     <div>
                       <div className="font-medium flex items-center gap-2">
                         {method.type === "card" && (
                           <>
                             •••• {method.card_last_four}
-                            {method.is_default && (
-                              <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                                <Check className="h-3 w-3" />
-                                Par défaut
-                              </span>
-                            )}
                           </>
                         )}
                         {method.type === "paypal" && "PayPal"}
                         {method.type === "bank_transfer" && "Virement bancaire"}
+                        {method.is_default && (
+                          <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                            <Check className="h-3 w-3" />
+                            Par défaut
+                          </span>
+                        )}
                       </div>
                       {method.type === "card" && method.card_exp_month && method.card_exp_year && (
                         <p className="text-sm text-muted-foreground">
