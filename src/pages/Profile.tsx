@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -5,11 +6,16 @@ import { Navigate, Link } from "react-router-dom";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { PaymentMethods } from "@/components/profile/PaymentMethods";
 import { OrderHistory } from "@/components/profile/OrderHistory";
-import { User, CreditCard, ShoppingBag, Home } from "lucide-react";
+import { AIConnections } from "@/components/profile/AIConnections";
+import { AIChat } from "@/components/profile/AIChat";
+import { User, CreditCard, ShoppingBag, Home, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const Profile = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const [activeChatConnection, setActiveChatConnection] = useState<{ id: string; name: string } | null>(null);
 
   if (isLoading) {
     return (
@@ -21,6 +27,22 @@ const Profile = () => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (activeChatConnection) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <AIChat
+            connectionId={activeChatConnection.id}
+            connectionName={activeChatConnection.name}
+            onBack={() => setActiveChatConnection(null)}
+          />
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   return (
@@ -36,7 +58,7 @@ const Profile = () => {
         </div>
         
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
               Profil
@@ -48,6 +70,10 @@ const Profile = () => {
             <TabsTrigger value="orders" className="flex items-center gap-2">
               <ShoppingBag className="h-4 w-4" />
               Commandes
+            </TabsTrigger>
+            <TabsTrigger value="ai" className="flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              IA
             </TabsTrigger>
           </TabsList>
 
@@ -61,6 +87,14 @@ const Profile = () => {
 
           <TabsContent value="orders">
             <OrderHistory />
+          </TabsContent>
+
+          <TabsContent value="ai">
+            <AIConnections 
+              onOpenChat={(id) => {
+                setActiveChatConnection({ id, name: 'IA' });
+              }}
+            />
           </TabsContent>
         </Tabs>
       </div>
