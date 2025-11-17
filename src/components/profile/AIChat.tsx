@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { Send, ArrowLeft, Loader2 } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -24,6 +25,7 @@ export const AIChat = ({ connectionId, connectionName, onBack }: AIChatProps) =>
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { addToCart, removeFromCart } = useCart();
 
   useEffect(() => {
     loadHistory();
@@ -73,6 +75,56 @@ export const AIChat = ({ connectionId, connectionName, onBack }: AIChatProps) =>
       });
 
       if (error) throw error;
+
+      // Handle client-side actions
+      if (data.actions) {
+        for (const action of data.actions) {
+          switch (action.action) {
+            case 'add_to_cart':
+              // Fetch wine details
+              const { data: wine } = await supabase
+                .from('wines')
+                .select('*')
+                .eq('id', action.wine_id)
+                .single();
+              if (wine) {
+                // Map wine to CartItem format
+                const cartWine = {
+                  id: wine.id,
+                  name: wine.name,
+                  region: wine.region,
+                  year: wine.year.toString(),
+                  price: wine.price,
+                  image: wine.image,
+                  type: wine.type,
+                };
+                // Add to cart multiple times for quantity
+                for (let i = 0; i < action.quantity; i++) {
+                  addToCart(cartWine);
+                }
+                toast({
+                  title: '✓ Panier',
+                  description: `${wine.name} (x${action.quantity}) ajouté au panier`,
+                });
+              }
+              break;
+            case 'remove_from_cart':
+              removeFromCart(action.wine_id);
+              toast({
+                title: '✓ Panier',
+                description: 'Article retiré du panier',
+              });
+              break;
+            case 'get_cart':
+              // Trigger cart modal (could be enhanced)
+              toast({
+                title: 'ℹ️ Panier',
+                description: 'Consultez votre panier en haut à droite',
+              });
+              break;
+          }
+        }
+      }
 
       setMessages(prev => [...prev, { role: 'assistant', content: data.content }]);
     } catch (error: any) {
