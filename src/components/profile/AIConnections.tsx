@@ -31,6 +31,7 @@ export const AIConnections = ({ onOpenChat }: AIConnectionsProps) => {
     model_name: '',
     display_name: '',
     api_key: '',
+    webhook_url: '',
   });
   const { toast } = useToast();
 
@@ -73,6 +74,7 @@ export const AIConnections = ({ onOpenChat }: AIConnectionsProps) => {
           model_name: formData.model_name,
           display_name: formData.display_name,
           api_key_encrypted: formData.api_key,
+          webhook_url: formData.webhook_url || null,
           is_active: true,
         });
 
@@ -84,7 +86,7 @@ export const AIConnections = ({ onOpenChat }: AIConnectionsProps) => {
       });
 
       setIsDialogOpen(false);
-      setFormData({ provider: '', model_name: '', display_name: '', api_key: '' });
+      setFormData({ provider: '', model_name: '', display_name: '', api_key: '', webhook_url: '' });
       loadConnections();
     } catch (error: any) {
       toast({
@@ -210,6 +212,19 @@ export const AIConnections = ({ onOpenChat }: AIConnectionsProps) => {
                   />
                 </div>
               )}
+              <div className="space-y-2">
+                <Label htmlFor="webhook_url">Webhook n8n (Optionnel)</Label>
+                <Input
+                  id="webhook_url"
+                  type="url"
+                  value={formData.webhook_url}
+                  onChange={(e) => setFormData({ ...formData, webhook_url: e.target.value })}
+                  placeholder="https://votre-instance-n8n.com/webhook/..."
+                />
+                <p className="text-xs text-muted-foreground">
+                  📡 Automatisez des actions externes via n8n quand l'IA effectue certaines tâches
+                </p>
+              </div>
               <DialogFooter>
                 <Button type="submit">Ajouter</Button>
               </DialogFooter>
@@ -239,6 +254,9 @@ export const AIConnections = ({ onOpenChat }: AIConnectionsProps) => {
                     <CardTitle className="text-base">{connection.display_name}</CardTitle>
                     <CardDescription>
                       {connection.provider} • {connection.model_name}
+                      {(connection as any).webhook_url && (
+                        <span className="ml-2">📡 n8n</span>
+                      )}
                     </CardDescription>
                   </div>
                 </div>

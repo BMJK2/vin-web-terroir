@@ -126,6 +126,21 @@ const tools = [
       description: "Consulter les moyens de paiement enregistrés",
       parameters: { type: "object", properties: {} }
     }
+  },
+  {
+    type: "function",
+    function: {
+      name: "trigger_n8n_webhook",
+      description: "Déclencher un webhook n8n pour automatiser des actions externes",
+      parameters: {
+        type: "object",
+        properties: {
+          event_type: { type: "string", description: "Type d'événement (order_placed, cart_updated, profile_updated, etc.)" },
+          data: { type: "object", description: "Données à envoyer au webhook" }
+        },
+        required: ["event_type"]
+      }
+    }
   }
 ];
 
@@ -247,6 +262,42 @@ async function executeToolCall(toolName: string, args: any, supabase: any, userI
         return { payment_methods: data };
       }
       
+      case "trigger_n8n_webhook": {
+        // Get the webhook URL from the connection
+        const { data: connection } = await supabase
+          .from('user_ai_connections')
+          .select('webhook_url')
+          .eq('id', args.connection_id || '')
+          .single();
+        
+        if (!connection?.webhook_url) {
+          return { error: "Aucun webhook n8n configuré" };
+        }
+        
+        try {
+          const webhookResponse = await fetch(connection.webhook_url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              event_type: args.event_type,
+              data: args.data || {},
+              timestamp: new Date().toISOString(),
+              user_id: userId
+            })
+          });
+          
+          console.log('n8n webhook triggered:', webhookResponse.status);
+          return { 
+            success: true, 
+            message: `Webhook n8n déclenché avec succès (${args.event_type})`,
+            status: webhookResponse.status
+          };
+        } catch (error) {
+          console.error('n8n webhook error:', error);
+          return { error: `Erreur webhook: ${error.message}` };
+        }
+      }
+      
       default:
         return { error: "Unknown tool" };
     }
@@ -254,6 +305,18 @@ async function executeToolCall(toolName: string, args: any, supabase: any, userI
     console.error(`Error executing ${toolName}:`, error);
     return { error: error.message };
   }
+}
+
+// Execute tool calls with connection context
+async function executeToolCallWithConnection(
+  toolName: string, 
+  args: any, 
+  supabase: any, 
+  userId: string,
+  connectionId: string
+) {
+  // Add connectionId to args for webhook trigger
+  return executeToolCall(toolName, { ...args, connection_id: connectionId }, supabase, userId);
 }
 
 serve(async (req) => {
@@ -448,7 +511,7 @@ serve(async (req) => {
           ? toolCall.input
           : JSON.parse(toolCall.function.arguments);
         
-        const result = await executeToolCall(toolName, toolArgs, supabase, user.id);
+        const result = await executeToolCallWithConnection(toolName, toolArgs, supabase, user.id, connectionId);
         toolResults.push({ tool: toolName, result });
       }
 

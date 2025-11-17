@@ -219,6 +219,7 @@ export type Database = {
           provider: string
           updated_at: string
           user_id: string
+          webhook_url: string | null
         }
         Insert: {
           api_key_encrypted?: string | null
@@ -230,6 +231,7 @@ export type Database = {
           provider: string
           updated_at?: string
           user_id: string
+          webhook_url?: string | null
         }
         Update: {
           api_key_encrypted?: string | null
@@ -241,6 +243,7 @@ export type Database = {
           provider?: string
           updated_at?: string
           user_id?: string
+          webhook_url?: string | null
         }
         Relationships: []
       }
